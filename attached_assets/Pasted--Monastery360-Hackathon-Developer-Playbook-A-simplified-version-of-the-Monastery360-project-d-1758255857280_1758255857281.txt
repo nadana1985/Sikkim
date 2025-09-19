@@ -1,0 +1,72 @@
+# 🏯 Monastery360 – Hackathon Developer Playbook
+
+A simplified version of the Monastery360 project designed for *college hackathon execution* while aligning with *SIH 2025 Problem 61*.
+
+---
+
+## 🎯 Hackathon Goal
+Digitize and showcase the monasteries of Sikkim through a *working prototype* that highlights:
+- Monastery profiles (history, rituals, architecture, images).  
+- Interactive monastery map.  
+- Festival & cultural calendar.  
+- 360° virtual demo tour.  
+
+---
+
+## 📦 Phase 1 – Core Monastery Archive (Backend)
+
+### 🗄️ Monastery Database
+*Prompt:*  
+"Create a NestJS backend with PostgreSQL that manages monastery data. Define tables for:  
+- monasteries (id, name, location, history, rituals, architecture, founded_year, images, panoramic_urls).  
+- festivals (id, monastery_id, name, date, description).  
+- media (id, monastery_id, type [image, mural, manuscript, 360view], url).  
+
+Include REST APIs for CRUD operations. Admin can add/edit, public can view. Implement Swagger docs for API testing."
+
+---
+
+## 📦 Phase 2 – Admin CMS (Frontend)
+
+### 🖥️ Content Dashboard
+*Prompt:*  
+"Using Next.js with TypeScript, build an admin dashboard for monastery content entry. Features:  
+- Login with JWT auth (admin role).  
+- Form to add/edit monasteries with text and images.  
+- Media gallery with drag-drop upload.  
+
+Use TailwindCSS + ShadCN UI for design. Connect APIs from the NestJS backend."
+
+---
+
+## 📦 Phase 3 – Public Platform (Frontend)
+
+### 🗺️ Interactive Map
+*Prompt:*  
+"Integrate Google Maps or Mapbox in Next.js to show monastery locations. Each marker opens a popup with:  
+- Monastery name  
+- Short description  
+- Link to detailed profile page."
+
+---
+
+### 🌐 360° Virtual Tour (Demo)
+*Prompt:*  
+"Integrate Three.js (or pannellum.js) in Next.js to render a 360° panoramic monastery tour. Load panoramic image from the media table. Add simple hotspots that show murals or info when clicked."
+
+---
+
+### 📅 Festival & Ritual Calendar
+*Prompt:*  
+"Build a festival calendar in Next.js. Pull events from the festivals table. Display in month/week view using FullCalendar.js. Add filter by monastery."
+
+---
+
+## ✅ Hackathon Deliverables
+
+By the end of the hackathon, the prototype should demonstrate:
+1. *Backend + DB* → CRUD APIs for monasteries, festivals, media.  
+2. *Admin CMS* → Add/edit monastery content and images.  
+3. *Interactive Map* → Monasteries pinned with info popups.  
+4. *Festival Calendar* → Monthly cultural events.  
+5. *360° Tour (Demo)* → One monastery with a panoramic view + hotspots.
