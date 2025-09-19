@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, MapPin, Eye, Mountain, User, Clock } from "lucide-react";
 import { Link } from "wouter";
-import { useAuth } from "@/hooks/useAuth";
+// import { useAuth } from "@/hooks/useAuth"; // TODO: implement auth hook
 import heroImage from '@assets/generated_images/Sikkim_monastery_hero_image_91581ecf.png'
 import interiorImage from '@assets/generated_images/Monastery_interior_showcase_08244864.png'
 import festivalImage from '@assets/generated_images/Festival_celebration_photo_2ceb16a8.png'
 
 export default function Home() {
-  const { user } = useAuth();
+  // const { user } = useAuth(); // TODO: implement auth hook
+  const user = { firstName: "Guest" }; // temporary placeholder
 
   //todo: remove mock functionality
   const recentlyViewed = [

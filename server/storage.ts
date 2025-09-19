@@ -95,8 +95,6 @@ export class DatabaseStorage implements IStorage {
     isActive?: boolean;
     search?: string;
   }): Promise<Monastery[]> {
-    let query = db.select().from(monasteries);
-    
     const conditions = [];
     
     if (filters?.district) {
@@ -126,10 +124,17 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      return await db
+        .select()
+        .from(monasteries)
+        .where(and(...conditions))
+        .orderBy(asc(monasteries.name));
     }
     
-    return await query.orderBy(asc(monasteries.name));
+    return await db
+      .select()
+      .from(monasteries)
+      .orderBy(asc(monasteries.name));
   }
 
   async getMonastery(id: string): Promise<Monastery | undefined> {
@@ -164,8 +169,6 @@ export class DatabaseStorage implements IStorage {
     status?: string;
     upcoming?: boolean;
   }): Promise<Festival[]> {
-    let query = db.select().from(festivals);
-    
     const conditions = [];
     
     if (filters?.monasteryId) {
@@ -181,10 +184,17 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      return await db
+        .select()
+        .from(festivals)
+        .where(and(...conditions))
+        .orderBy(asc(festivals.startDate));
     }
     
-    return await query.orderBy(asc(festivals.startDate));
+    return await db
+      .select()
+      .from(festivals)
+      .orderBy(asc(festivals.startDate));
   }
 
   async getFestival(id: string): Promise<Festival | undefined> {
@@ -220,8 +230,6 @@ export class DatabaseStorage implements IStorage {
     type?: string;
     category?: string;
   }): Promise<Media[]> {
-    let query = db.select().from(media);
-    
     const conditions = [];
     
     if (filters?.monasteryId) {
@@ -241,10 +249,17 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (conditions.length > 0) {
-      query = query.where(and(...conditions));
+      return await db
+        .select()
+        .from(media)
+        .where(and(...conditions))
+        .orderBy(desc(media.isMain), asc(media.sortOrder));
     }
     
-    return await query.orderBy(desc(media.isMain), asc(media.sortOrder));
+    return await db
+      .select()
+      .from(media)
+      .orderBy(desc(media.isMain), asc(media.sortOrder));
   }
 
   async getMediaItem(id: string): Promise<Media | undefined> {
