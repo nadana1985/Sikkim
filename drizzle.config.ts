@@ -1,14 +1,14 @@
-import { defineConfig } from "drizzle-kit";
-
-if (!process.env.DATABASE_URL) {
-  throw new Error("DATABASE_URL, ensure the database is provisioned");
-}
+import { defineConfig } from 'drizzle-kit';
 
 export default defineConfig({
-  out: "./migrations",
-  schema: "./shared/schema.ts",
-  dialect: "postgresql",
+  schema: './shared/schema.ts',    // path to your schema files
+  out: './migrations',             // folder for migrations
+  dialect: 'postgresql',           // database dialect
   dbCredentials: {
-    url: process.env.DATABASE_URL,
+    url: process.env.DATABASE_URL!,
+    // SSL only for production/cloud databases
+    ...(process.env.NODE_ENV === 'production' && {
+      ssl: { rejectUnauthorized: false }
+    }),
   },
 });
