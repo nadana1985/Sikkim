@@ -8,6 +8,12 @@ import Landing from "@/pages/Landing";
 import Home from "@/pages/Home";
 import NotFound from "@/pages/not-found";
 
+// Admin pages
+import AdminLayout from "@/pages/admin/AdminLayout";
+import AdminDashboard from "@/pages/admin/AdminDashboard";
+import MonasteryList from "@/pages/admin/MonasteryList";
+import MonasteryForm from "@/pages/admin/MonasteryForm";
+
 // Component examples for design preview
 import HeaderExample from "@/components/examples/Header";
 import MonasteryCardExample from "@/components/examples/MonasteryCard";
@@ -28,6 +34,24 @@ function Router() {
       ) : (
         <Route path="/" component={Home} />
       )}
+      
+      {/* Admin routes - wrapped in AdminLayout */}
+      <Route path="/admin" nest>
+        <AdminLayout>
+          <Route path="/" component={AdminDashboard} />
+          <Route path="/monasteries" component={MonasteryList} />
+          <Route path="/monasteries/new">
+            {() => <MonasteryForm />}
+          </Route>
+          <Route path="/monasteries/:id/edit">
+            {(params) => <MonasteryForm monasteryId={params.id} />}
+          </Route>
+          {/* Festival routes - will be added next */}
+          <Route path="/festivals" component={() => <div>Festival management coming soon</div>} />
+          <Route path="/media" component={() => <div>Media management coming soon</div>} />
+          <Route path="/settings" component={() => <div>Settings coming soon</div>} />
+        </AdminLayout>
+      </Route>
       
       {/* Design component examples for preview */}
       <Route path="/preview/header" component={HeaderExample} />
