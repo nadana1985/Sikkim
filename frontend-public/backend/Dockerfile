@@ -45,7 +45,8 @@ RUN addgroup -g 1001 -S monastery && \
 # Ensure data directory is writable
 RUN chown -R monastery:monastery /app/data
 
-USER monastery
+# Run as root to prevent permission issues with mounted Railway persistent volumes
+# USER monastery
 
 # Expose port
 EXPOSE 4000
