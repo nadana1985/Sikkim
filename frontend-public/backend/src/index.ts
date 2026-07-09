@@ -50,13 +50,20 @@ app.use(cors({
     // Allow requests with no origin (mobile apps, curl, SSR)
     if (!origin) return callback(null, true);
 
-    // Allow any localhost port in development
-    if (process.env.NODE_ENV !== 'production' && /^https?:\/\/localhost(:\d+)?$/.test(origin)) {
+    // Allow any localhost port
+    if (/^https?:\/\/localhost(:\d+)?$/.test(origin)) {
       return callback(null, true);
     }
 
-    // Check explicit origins from CORS_ORIGINS env var
-    if (corsOrigins.includes(origin)) return callback(null, true);
+    // Allow if CORS_ORIGINS contains "*" or the origin matches
+    if (corsOrigins.includes('*') || corsOrigins.includes(origin)) {
+      return callback(null, true);
+    }
+
+    // Allow Vercel preview and production domains
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
 
     callback(new Error('Not allowed by CORS'));
   },
