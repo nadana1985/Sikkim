@@ -23,6 +23,9 @@ FROM node:20-alpine AS production
 # Install runtime dependencies for sharp
 RUN apk add --no-cache vips-dev
 
+# Set production environment
+ENV NODE_ENV=production
+
 WORKDIR /app
 
 # Copy only production dependencies
