@@ -160,6 +160,25 @@ server.listen(PORT, () => {
   logger.info({ port: PORT }, '🏯 Monastery360 Backend API started');
   logger.info({ url: `http://localhost:${PORT}/health` }, 'Health check endpoint');
   logger.info({ url: `http://localhost:${PORT}/images/` }, 'Static images endpoint');
+
+  // Auto-seed database if empty
+  try {
+    const checkEmpty = db.prepare("SELECT count(*) as count FROM monasteries").get() as { count: number };
+    if (checkEmpty && checkEmpty.count === 0) {
+      logger.info('Database is empty. Seeding in the background...');
+      const { exec } = require('child_process');
+      const seedPath = path.join(__dirname, 'seed.js');
+      exec(`node "${seedPath}"`, (error: any, stdout: string, stderr: string) => {
+        if (error) {
+          logger.error({ err: error, stderr }, 'Failed to auto-seed database');
+        } else {
+          logger.info('Database auto-seeded successfully');
+        }
+      });
+    }
+  } catch (err) {
+    logger.error({ err }, 'Error checking database count for auto-seeding');
+  }
 });
 
 export default app;

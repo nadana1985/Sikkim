@@ -55,5 +55,5 @@ EXPOSE 4000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
   CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-4000}/health || exit 1
 
-# Seed database and start the application
-CMD ["sh", "-c", "node dist/seed.js && node dist/index.js"]
+# Start the application
+CMD ["node", "dist/index.js"]
