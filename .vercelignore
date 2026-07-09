@@ -1,0 +1,11 @@
+# Backend is hosted separately (Express + SQLite)
+backend/
+
+# Testing artifacts
+test-results/
+playwright-report/
+coverage/
+
+# Dev files
+.git/
+.github/

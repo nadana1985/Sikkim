@@ -1,0 +1,129 @@
+# Monastery360 — Production Docker Compose
+
+# Usage:
+#   Local development with self-signed SSL:
+#     1. ./scripts/generate-ssl.sh
+#     2. docker compose -f docker-compose.prod.yml --profile dev-ssl up -d
+#
+#   Production with Let's Encrypt:
+#     1. Set DOMAIN and ACME_EMAIL in .env.production
+#     2. docker compose -f docker-compose.prod.yml --profile production up -d
+#     3. Initial cert: docker compose -f docker-compose.prod.yml run --rm certbot-init
+
+services:
+  # ── Next.js Frontend (Standalone) ──────────────────────────
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        NODE_ENV: production
+    container_name: monastery360-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL:-http://backend:4000}
+      - NEXT_PUBLIC_GA_ID=${NEXT_PUBLIC_GA_ID:-}
+      - SENTRY_ORG=${SENTRY_ORG:-}
+      - SENTRY_PROJECT=${SENTRY_PROJECT:-}
+    env_file:
+      - path: .env.production
+        required: false
+    restart: unless-stopped
+    healthcheck:
+      # Use node-based check since wget is not available in node:18-alpine
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/api/health', r => process.exit(r.statusCode === 200 ? 0 : 1)).on('error', () => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 15s
+    networks:
+      - internal
+    expose:
+      - "3000"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+          cpus: "1.0"
+
+  # ── Nginx Reverse Proxy ────────────────────────────────────
+  nginx:
+    image: nginx:1.27-alpine
+    container_name: monastery360-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # Template nginx.conf at startup via envsubst
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf.tmpl:ro
+      - ./nginx/docker-entrypoint.sh:/docker-entrypoint.sh:ro
+      # Mount ssl dir as /etc/letsencrypt so nginx reads certs
+      # from /etc/letsencrypt/live/{domain}/ (certbot structure)
+      - ./nginx/ssl:/etc/letsencrypt:ro
+      - certbot-webroot:/var/www/certbot:ro
+      - nginx-logs:/var/log/nginx
+    entrypoint: ["/bin/sh", "/docker-entrypoint.sh"]
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+    depends_on:
+      frontend:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+    networks:
+      - internal
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.5"
+
+  # ── Let's Encrypt Certbot (Production profile only) ────────
+  certbot:
+    image: certbot/certbot:latest
+    container_name: monastery360-certbot
+    volumes:
+      - ./nginx/ssl:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done'"
+    env_file:
+      - path: .env.production
+        required: false
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+      - ACME_EMAIL=${ACME_EMAIL:-admin@localhost}
+    profiles:
+      - production
+    networks:
+      - internal
+
+  # ── Certbot Init (run once for initial certificate) ────────
+  certbot-init:
+    image: certbot/certbot:latest
+    container_name: monastery360-certbot-init
+    volumes:
+      - ./nginx/ssl:/etc/letsencrypt
+      - certbot-webroot:/var/www/certbot
+    entrypoint: "/bin/sh -c 'certbot certonly --webroot -w /var/www/certbot -d ${DOMAIN:-localhost} --email ${ACME_EMAIL:-admin@localhost} --agree-tos --no-eff-email --force-renewal'"
+    env_file:
+      - path: .env.production
+        required: false
+    environment:
+      - DOMAIN=${DOMAIN:-localhost}
+      - ACME_EMAIL=${ACME_EMAIL:-admin@localhost}
+    profiles:
+      - production
+    networks:
+      - internal
+
+volumes:
+  certbot-webroot:
+  nginx-logs:
+
+networks:
+  internal:
+    driver: bridge

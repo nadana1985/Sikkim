@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --foreground: #171717;
+}
+
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-inter);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+  .dark {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+}
+
+/* Smooth theme transition */
+html {
+  transition: color 0.2s, background-color 0.2s;
+}
+
+/* Override default Leaflet.markercluster icons to show only our custom orange gradient circles */
+.monastery-cluster-icon {
+  background: transparent !important;
+  border: none !important;
+  transition: opacity 0.2s ease-out;
+}
+.monastery-cluster-icon div {
+  background: linear-gradient(135deg, #f97316, #ea580c);
+  border: 3px solid white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+              background 0.2s ease;
+}
+
+/* Cluster enter/merge animation: scale up with overshoot */
+.monastery-cluster-icon.leaflet-marker-icon {
+  transform-origin: center center;
+  animation: cluster-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+@keyframes cluster-pop {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Spiderfy animation: markers fan out from cluster center */
+.monastery-cluster-icon.leaflet-marker-spiderfied {
+  opacity: 0;
+  transform: scale(0.5);
+  transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+}
+
+/* Hover effect on cluster icons */
+.monastery-cluster-icon:hover div {
+  transform: scale(1.1);
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
+}

@@ -1,0 +1,27 @@
+{
+  "name": "Monastery360 - Explore Sikkim's Sacred Monasteries",
+  "short_name": "Monastery360",
+  "description": "Discover the rich cultural heritage of Sikkim's monasteries through immersive 360° virtual tours and explore the spiritual essence of the Himalayas.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ea580c",
+  "orientation": "any",
+  "categories": ["travel", "education", "entertainment"],
+  "lang": "en",
+  "dir": "ltr",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
