@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import { Monastery, Festival, Tour, ApiResponse, PaginatedResponse } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://sikkim-production.up.railway.app';
 
 /** ISR revalidation interval in seconds (1 hour). */
 export const ISR_REVALIDATION = 3600;

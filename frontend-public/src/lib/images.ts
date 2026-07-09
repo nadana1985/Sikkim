@@ -2,7 +2,7 @@
  * Shared image utilities for Monastery360
  */
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://sikkim-production.up.railway.app';
 
 /**
  * Resolves an image path from the API into a full URL.

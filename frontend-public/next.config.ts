@@ -4,8 +4,8 @@ import createBundleAnalyzer from "@next/bundle-analyzer";
 import withPWAInit from "next-pwa";
 
 // Derive allowed image domains from the API URL to avoid hardcoding.
-// In development NEXT_PUBLIC_API_URL defaults to http://localhost:4000.
-const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+// In development NEXT_PUBLIC_API_URL defaults to https://sikkim-production.up.railway.app.
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://sikkim-production.up.railway.app';
 const parsed = new URL(apiUrl);
 const apiProtocol = parsed.protocol.replace(':', '') as 'http' | 'https';
 const apiHostname = parsed.hostname;
