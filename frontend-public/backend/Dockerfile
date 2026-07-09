@@ -16,6 +16,7 @@ RUN npm ci && npm cache clean --force
 COPY tsconfig.json ./
 COPY src/ ./src/
 RUN npm run build
+RUN npm prune --omit=dev
 
 # ─── Production ───────────────────────────────────────────────────────────────
 FROM node:20-alpine AS production
@@ -28,9 +29,8 @@ ENV NODE_ENV=production
 
 WORKDIR /app
 
-# Copy only production dependencies
-COPY package.json package-lock.json* ./
-RUN npm ci --omit=dev && npm cache clean --force
+# Copy pre-compiled production dependencies
+COPY --from=build /app/node_modules ./node_modules
 
 # Copy built files
 COPY --from=build /app/dist ./dist
@@ -52,7 +52,7 @@ EXPOSE 4000
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
-  CMD wget --no-verbose --tries=1 --spider http://localhost:4000/health || exit 1
+  CMD wget --no-verbose --tries=1 --spider http://localhost:${PORT:-4000}/health || exit 1
 
 # Seed database and start the application
 CMD ["sh", "-c", "node dist/seed.js && node dist/index.js"]

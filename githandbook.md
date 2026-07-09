@@ -120,7 +120,7 @@ git push -u origin main --force
 4. Framework: **Next.js** (auto-detected)
 5. Add Environment Variables:
    ```
-   NEXT_PUBLIC_API_URL=https://monastery360-backend.up.railway.app
+   NEXT_PUBLIC_API_URL=https://sikkim-production.up.railway.app
    SENTRY_ORG=monastery360
    SENTRY_PROJECT=frontend-public
    ```
@@ -140,7 +140,7 @@ git push -u origin main --force
    NODE_ENV=production
    ```
 7. Deploy
-8. Copy the Railway URL (e.g., `https://monastery360-backend.up.railway.app`)
+8. Copy the Railway URL (e.g., `https://sikkim-production.up.railway.app`)
 
 ### Step 4: Update Frontend with Backend URL
 
